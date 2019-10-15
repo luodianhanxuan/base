@@ -27,5 +27,12 @@
             <version>1.18.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.39.Final</version>
+        </dependency>
     </dependencies>
 </project>
