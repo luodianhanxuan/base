@@ -1,4 +1,4 @@
-package com.wangjg.algorithm.leetcode.second;
+package com.wangjg.algorithm.leetcode.first;
 
 
 import com.sun.tools.javac.util.Assert;
