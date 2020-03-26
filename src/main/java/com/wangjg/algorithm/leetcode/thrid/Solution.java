@@ -1,5 +1,4 @@
-package com.wangjg.algorithm.leetcode.first;
-
+package com.wangjg.algorithm.leetcode.thrid;
 
 import com.sun.tools.javac.util.Assert;
 
@@ -7,14 +6,14 @@ import java.util.*;
 
 /**
  * @author wangjg
- * 2020/2/23
+ * 2020/3/5
  */
-class Solution {
+public class Solution {
 
     private static class ClimbStairs {
 
         public int climbStairs0(int n) {
-            if (n <= 3) {
+            if (n <= 2) {
                 return n;
             }
             return climbStairs0(n - 1) + climbStairs0(n - 2);
@@ -24,7 +23,6 @@ class Solution {
             if (n <= 2) {
                 return n;
             }
-
             int f1 = 1, f2 = 2, f3 = 3;
             for (int i = 0; i < n - 2; i++) {
                 f3 = f1 + f2;
@@ -33,90 +31,80 @@ class Solution {
             }
             return f3;
         }
-
     }
 
-    static class GenerateParententhesis {
+    private static class GenerateParententhesis {
+
         public List<String> generateParententhesis(int n) {
             List<String> res = new ArrayList<>();
-            doGenerate(0, 0, n, "", res);
+            doGenerateParententhesis(0, 0, n, "", res);
             return res;
         }
 
-        private void doGenerate(int left, int right, int n, String s, List<String> res) {
+        private void doGenerateParententhesis(int left, int right, int n, String s, List<String> res) {
             if (left == n && right == n) {
                 res.add(s);
                 return;
             }
             if (left < n) {
-                doGenerate(left + 1, right, n, s + "(", res);
+                doGenerateParententhesis(left + 1, right, n, s + "(", res);
             }
             if (right < left) {
-                doGenerate(left, right + 1, n, s + ")", res);
+                doGenerateParententhesis(left, right + 1, n, s + ")", res);
             }
         }
     }
 
-    static class GroupAnagrams {
+    private static class GroupAnagrams {
         public List<List<String>> groupAnagrams(String[] strings) {
             Map<String, List<String>> map = new HashMap<>();
-            for (String str : strings) {
-                char[] chars = str.toLowerCase().toCharArray();
+            for (String s : strings) {
+                char[] chars = s.toCharArray();
                 Arrays.sort(chars);
-                String key = new String(chars);
-
+                String key = String.valueOf(chars);
                 List<String> list = map.computeIfAbsent(key, k -> new ArrayList<>());
-                list.add(str);
+                list.add(s);
             }
             return new ArrayList<>(map.values());
-
         }
     }
 
-    static class TreeNode {
-
+    private static class TreeNode {
         public int val;
-
         public TreeNode left, right;
 
         public TreeNode(int val) {
             this.val = val;
-            this.left = null;
-            this.right = null;
         }
-
     }
 
-    static class LowestCommonAncestor {
+    private static class LowestCommonAncestor {
 
         public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-            if (root == null || p.val == root.val || q.val == root.val) {
+            if (root == null || root.val == p.val || root.val == q.val) {
                 return root;
             }
-
-            // 从左子树找 p 或 q
+            // 在左子树上找
             TreeNode left = lowestCommonAncestor(root.left, p, q);
+            // 在右子树上找
             TreeNode right = lowestCommonAncestor(root.right, p, q);
-
-            if (left != null && right != null) {
+            if (left == right) {
                 return root;
             }
-
             return left != null ? left : right;
         }
-
     }
 
     static class MaxArea {
 
         /**
-         * 暴力法 遍历求所有的面积找到最大值
+         * 暴力法：遍历求出所有的面积找到最大值
          */
         public int maxArea0(int[] heights) {
             int max = 0;
             for (int i = 0; i < heights.length - 1; i++) {
                 for (int j = i + 1; j < heights.length; j++) {
-                    int area = (j - i) * Math.min(heights[i], heights[j]);
+                    int area = (j - i) * Math.min(heights[j], heights[i]);
                     max = Math.max(area, max);
                 }
             }
@@ -124,7 +112,7 @@ class Solution {
         }
 
         /**
-         * 从最大宽度开始向中间夹逼
+         * 从最大面积开始，左右夹逼
          */
         public int maxArea1(int[] heights) {
             int max = 0;
@@ -137,130 +125,98 @@ class Solution {
         }
     }
 
-    static class MoveZero {
+    private static class MoveZero {
         public void moveZero(int[] nums) {
-            int notZeroPos = 0;
+            int not0Pos = 0;
             for (int i = 0; i < nums.length; i++) {
                 if (nums[i] != 0) {
-                    nums[notZeroPos] = nums[i];
-                    if (notZeroPos != i) {
+                    nums[not0Pos] = nums[i];
+                    if (not0Pos != i) {
                         nums[i] = 0;
                     }
-                    notZeroPos++;
+                    not0Pos++;
                 }
             }
         }
     }
 
-    static class Node {
-        private int val;
-        private List<Node> children;
+    private static class Node {
+        public int val;
+        public List<Node> children;
 
         public Node(int val) {
             this.val = val;
         }
     }
 
-    static class NtreeLevelOrder {
+    private static class NtreeLevelOrder {
         public List<List<Integer>> levelOrder(Node root) {
-            if (root == null) {
-                return new ArrayList<>();
-            }
-            Deque<Node> queue = new LinkedList<>();
-            queue.add(root);
             List<List<Integer>> res = new ArrayList<>();
+            Deque<Node> queue = new LinkedList<>();
+            queue.addLast(root);
             while (!queue.isEmpty()) {
-                List<Integer> tmpList = new ArrayList<>();
-                int currentSize = queue.size();
-                for (int i = 0; i < currentSize; i++) {
-                    Node node = queue.poll();
-                    if (node == null) {
+                int queueSize = queue.size();
+                List<Integer> tmp = new ArrayList<>();
+                for (int i = 0; i < queueSize; i++) {
+                    Node node = queue.removeFirst();
+                    tmp.add(node.val);
+                    if (node.children == null) {
                         continue;
                     }
-                    tmpList.add(node.val);
-                    List<Node> children = node.children;
-                    if (children != null) {
-                        queue.addAll(children);
+                    for (Node child : node.children) {
+                        if (child == null) {
+                            continue;
+                        }
+                        queue.addLast(child);
                     }
                 }
-                res.add(tmpList);
+                res.add(tmp);
             }
             return res;
         }
     }
 
-    static class TreePreOrderTraversal {
-
+    private static class TreePreOrderTraversal {
         /**
          * 递归方式遍历
          */
         public List<Integer> preOrder0(TreeNode root) {
-            List<Integer> container = new ArrayList<>();
-            doPreOrder(root, container);
-            return container;
+            List<Integer> res = new ArrayList<>();
+            doPreOrder0(root, res);
+            return res;
         }
 
-        private void doPreOrder(TreeNode root, List<Integer> container) {
-            if (root != null) {
-                container.add(root.val);
-                doPreOrder(root.left, container);
-                doPreOrder(root.right, container);
+        private void doPreOrder0(TreeNode root, List<Integer> res) {
+            if (root == null) {
+                return;
             }
+            res.add(root.val);
+            doPreOrder0(root.left, res);
+            doPreOrder0(root.right, res);
         }
 
-//        /**
-//         * 遍历方式
-//         */
-//        public List<Integer> preOrder1(TreeNode root) {
-//            List<Integer> res = new ArrayList<>();
-//            if (root == null) {
-//                return res;
-//            }
-//
-//            Deque<TreeNode> stack = new LinkedList<>();
-//            TreeNode tmp = root;
-//            while (tmp != null || !stack.isEmpty()) {
-//                while (tmp != null) {
-//                    res.add(tmp.val);
-//                    stack.push(tmp);
-//                    tmp = tmp.left;
-//                }
-//                // 左子树搞完了，开始搞右子树
-//                tmp = stack.pop().right;
-//            }
-//            return res;
-//        }
-
-        /**
-         * 遍历方式
-         */
         public List<Integer> preOrder1(TreeNode root) {
             List<Integer> res = new ArrayList<>();
-            if (root == null) {
-                return res;
-            }
-
             Deque<TreeNode> stack = new LinkedList<>();
-            stack.addLast(root);
-            while (!stack.isEmpty()) {
-                TreeNode node = stack.removeLast();
-                res.add(node.val);
-                if (node.right != null) {
-                    stack.addLast(node.right);
+
+            TreeNode tmp = root;
+            while (tmp != null || !stack.isEmpty()) {
+                while (tmp != null) {
+                    res.add(tmp.val);
+                    stack.addLast(tmp);
+                    tmp = tmp.left;
                 }
-                if (node.left != null) {
-                    stack.addLast(node.left);
-                }
+                tmp = stack.removeLast().right;
             }
             return res;
         }
     }
 
-    static class TwoSum {
+    private static class TwoSum {
         public int[] twoSum(int[] nums, int target) {
             for (int i = 0; i < nums.length - 1; i++) {
                 for (int j = i + 1; j < nums.length; j++) {
-                    if (target == nums[i] + nums[j]) {
+                    if (nums[i] + nums[j] == target) {
                         return new int[]{i, j};
                     }
                 }
@@ -269,163 +225,23 @@ class Solution {
         }
     }
 
-    static class MyPow {
-
-        public double myPow(int x, int n) {
+    private static class MyPower {
+        public double myPower(int x, int n) {
             if (n < 0) {
                 x = 1 / x;
                 n = -n;
             }
-
-            return fastPow(x, n);
+            return fastPower(x, n);
         }
 
-        private double fastPow(int x, int n) {
+        private double fastPower(int x, int n) {
             // terminator
             if (n == 0) {
-                // process result
                 return 1.0;
             }
-            // process current
-            double v = fastPow(x, n / 2);
-
+            double v = fastPower(x, n / 2);
             return n % 2 == 0 ? v * v : v * v * x;
         }
-    }
-
-    static class Subset {
-
-        public List<List<Integer>> subset(int[] nums) {
-            List<List<Integer>> res = new ArrayList<>();
-            _subset(nums, res);
-            return res;
-        }
-
-        private void _subset(int[] nums, List<List<Integer>> res) {
-            if (nums.length == 0) {
-                return;
-            }
-            List<Integer> list = new ArrayList<>();
-            for (int num : nums) {
-                list.add(num);
-            }
-            res.add(list);
-
-            int[] subNums = new int[nums.length - 1];
-            System.arraycopy(nums, 1, subNums, 0, nums.length - 1);
-
-            _subset(subNums, res);
-        }
-
-
-    }
-
-    private static class SearchMatrix {
-        public boolean searchMatrix(int[][] matrix, int target) {
-            int m = matrix.length;
-            if (m == 0) return false;
-            int n = matrix[0].length;
-
-            // 二分查找
-            int left = 0, right = m * n - 1;
-            int mid, midVal;
-            while (left <= right) {
-                mid = (left + right) / 2;
-                midVal = matrix[mid / n][mid % n];
-                if (target == midVal) {
-                    return true;
-                } else if (target < midVal) {
-                    right = mid - 1;
-                } else {
-                    left = mid + 1;
-                }
-            }
-            return false;
-        }
-    }
-
-    static class FindMin {
-        // TODO 没理解透呢
-        public int findMin(int[] nums) {
-            int left = 0;
-            int right = nums.length - 1;
-            while (left < right) {
-                int mid = left + (right - left) / 2;
-                if (nums[mid] > nums[right]) {
-                    left = mid + 1;
-                } else {
-                    right = mid;
-                }
-            }
-            return nums[left];
-        }
-    }
-
-    private static class ListNode {
-        int val;
-        ListNode next;
-
-        public ListNode(int val) {
-            this.val = val;
-        }
-
-        @Override
-        public String toString() {
-            return "ListNode{" +
-                    "val=" + val +
-                    ", next=" + next +
-                    '}';
-        }
-    }
-
-    private static class ReverseLinkedList {
-
-        public ListNode reverseList(ListNode head) {
-            return _reverseList(null, head);
-        }
-
-        private ListNode _reverseList(ListNode prev, ListNode current) {
-            if (current == null) {
-                return prev;
-            }
-            ListNode next = current.next;
-            current.next = prev;
-            return _reverseList(current, next);
-        }
-
-        public ListNode reverseList1(ListNode head) {
-            ListNode prev = null;
-            ListNode current = head;
-
-            while (current != null) {
-                ListNode next = current.next;
-                current.next = prev;
-                prev = current;
-                current = next;
-            }
-
-            return prev;
-        }
-    }
-
-    private static class MinPathSum {
-        public int minPathSum(int[][] grid) {
-            for (int i = 0; i < grid.length; i++) {
-                for (int j = 0; j < grid[0].length; j++) {
-                    if (i > 0 && j > 0) {
-                        grid[i][j] = Math.min(grid[i - 1][j], grid[i][j - 1]) + grid[i][j];
-                    } else if (j <= 0 && i > 0) {
-                        grid[i][j] = grid[i - 1][j] + grid[i][j];
-                    } else if (j > 0) {
-                        grid[i][j] = grid[i][j - 1] + grid[i][j];
-                    }
-                }
-            }
-            return grid[grid.length - 1][grid[0].length - 1];
-        }
-        // a. 最优子结构：opt[i,j] = Math.min(opt[i-1, j],opt[i,j-1]) + a[i,j]
-        // b. 状态空间 opt[i,j]
-        // c. DP 方程 f[i,j] = Math.min(f[i-1, j],f[i,j-1]) + a[i,j]
     }
 
     public static void main(String[] args) {
@@ -589,15 +405,15 @@ class Solution {
         ));
 
         System.out.println("======= myPow =======");
-        MyPow myPower = new MyPow();
+        MyPower myPower = new MyPower();
         long myPowerBegin = System.currentTimeMillis();
-        double myPowerRes = myPower.myPow(5, 4);
+        double myPowerRes = myPower.myPower(5, 4);
         long MyPowerEnd = System.currentTimeMillis();
         System.out.println(myPowerRes);
         System.out.println("myPower time spent:" + (MyPowerEnd - myPowerBegin));
         Assert.check(myPowerRes == 625);
 
-//
+
 //
 //        System.out.println("======= subset =======");
 //        Subset subset = new Subset();
@@ -609,7 +425,7 @@ class Solution {
 ////        Assert.check(Arrays.toString(moveZeroRes).equals(
 ////                "[1, 2, 2, 0, 0]"
 ////        ));
-//
+
 //
 //        System.out.println("======= search matrix =======");
 //        SearchMatrix searchMatrix = new SearchMatrix();
@@ -619,50 +435,6 @@ class Solution {
 //        System.out.println(searchMatrixRes);
 //        System.out.println("myPower time spent:" + (searchMatrixEnd - searchMatrixBegin));
 //        Assert.check(searchMatrixRes);
-
-//        boolean searchMatrixRes = searchMatrix.searchMatrix(new int[][]{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 50}}, 3);
-//        long searchMatrixEnd = System.currentTimeMillis();
-//        System.out.println(searchMatrixRes);
-//        System.out.println("myPower time spent:" + (searchMatrixEnd - searchMatrixBegin));
-//        Assert.check(searchMatrixRes);
-
-        System.out.println("=======reverse linkedList =======");
-        ListNode listNode1 = new ListNode(1);
-        ListNode listNode2 = new ListNode(2);
-        ListNode listNode3 = new ListNode(3);
-
-        listNode1.next = listNode2;
-        listNode2.next = listNode3;
-
-        ReverseLinkedList reverseLinkedList = new ReverseLinkedList();
-        long reverseLinkedList0Begin = System.currentTimeMillis();
-        ListNode reverseLinkedList0Res = reverseLinkedList.reverseList(listNode1);
-        long reverseLinkedList0End = System.currentTimeMillis();
-        System.out.println(reverseLinkedList0Res);
-        System.out.println("reverse linkedList time spent:" + (reverseLinkedList0End - reverseLinkedList0Begin));
-        Assert.check(reverseLinkedList0Res.toString().equals("ListNode{val=3, next=ListNode{val=2, next=ListNode{val=1, next=null}}}"));
-
-        ListNode listNode11 = new ListNode(1);
-        ListNode listNode12 = new ListNode(2);
-        ListNode listNode13 = new ListNode(3);
-
-        listNode11.next = listNode12;
-        listNode12.next = listNode13;
-        long reverseLinkedList1Begin = System.currentTimeMillis();
-        ListNode reverseLinkedList1Res = reverseLinkedList.reverseList1(listNode11);
-        long reverseLinkedList1End = System.currentTimeMillis();
-        System.out.println(reverseLinkedList1Res);
-        System.out.println("reverse linkedList1 time spent:" + (reverseLinkedList1End - reverseLinkedList1Begin));
-        Assert.check(reverseLinkedList1Res.toString().equals("ListNode{val=3, next=ListNode{val=2, next=ListNode{val=1, next=null}}}"));
-
-        System.out.println("======= minPathSum =======");
-        MinPathSum minPathSum = new MinPathSum();
-        long minPathSubBegin = System.currentTimeMillis();
-        int minPathSumRes = minPathSum.minPathSum(new int[][]{{1, 3, 1}, {1, 5, 1}, {4, 2, 1}});
-        long minPathSumEnd = System.currentTimeMillis();
-        System.out.println(minPathSumRes);
-        System.out.println("reverse linkedList time spent:" + (minPathSumEnd - minPathSubBegin));
-//        Assert.check(reverseLinkedList0Res.toString().equals("ListNode{val=3, next=ListNode{val=2, next=ListNode{val=1, next=null}}}"));
 
     }
 }
