@@ -8,8 +8,8 @@ import java.time.format.DateTimeFormatter;
  * 2020/3/25
  */
 public enum ValidateCodeTypeEnum {
-    REGISTER(1, "validatecode:register:times:%s:%s", "validatecode:register:code:%s:%s"),
-    FORGET_PASSWORD(1, "validatecode:forgetpwd:times:%s:%s", "validatecode:forgetpwd:code:%s"),
+    REGISTER(563837, "validatecode:register:times:%s:%s", "validatecode:register:code:%s"),
+    FORGET_PASSWORD(563837, "validatecode:forgetpwd:times:%s:%s", "validatecode:forgetpwd:code:%s"),
     ;
 
     /**

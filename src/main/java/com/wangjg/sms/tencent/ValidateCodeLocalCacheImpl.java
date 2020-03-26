@@ -28,7 +28,7 @@ public abstract class ValidateCodeLocalCacheImpl extends ValidateCode {
 
     @Override
     protected int getTodayTimes(ValidateCodeTypeEnum validateCodeTypeEnum, String mobile) {
-        return (int) CacheManager.get(validateCodeTypeEnum.getKey4SendTimes(mobile));
+        return CacheManager.get(validateCodeTypeEnum.getKey4SendTimes(mobile)) == null ? 0 : (int) CacheManager.get(validateCodeTypeEnum.getKey4SendTimes(mobile));
     }
 
 
