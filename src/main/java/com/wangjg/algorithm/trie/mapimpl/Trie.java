@@ -1,12 +1,15 @@
 package com.wangjg.algorithm.trie.mapimpl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author wangjg
  * 2020/3/19
  */
+@SuppressWarnings("DuplicatedCode")
 public class Trie {
 
     /**
@@ -17,22 +20,23 @@ public class Trie {
     /**
      * 直接儿子结点
      */
-    private Map<String, Trie> children;
+    private Map<Character, Trie> children;
 
     /**
      * 代表的字符
      */
-    private String val;
+    private Character letter;
 
     public Trie() {
         this(null);
     }
 
-    public Trie(String c) {
-        this.val = c;
+    public Trie(Character letter) {
+        this.letter = letter;
         this.endOfWord = false;
         this.children = new HashMap<>();
     }
+
 
     /**
      * 向字典树插入单词
@@ -41,7 +45,7 @@ public class Trie {
         Trie p = this;
         for (int i = 0; i < word.length(); i++) {
             char letter = word.charAt(i);
-            p = p.children.computeIfAbsent(String.valueOf(letter), key -> new Trie(String.valueOf(letter)));
+            p = p.children.computeIfAbsent(letter, key -> new Trie(letter));
         }
         p.endOfWord = true;
     }
@@ -50,13 +54,13 @@ public class Trie {
      * 查看单词是否在字典树中存在
      */
     public boolean search(String word) {
-       Trie p = this;
+        Trie p = this;
         for (int i = 0; i < word.length(); i++) {
             char letter = word.charAt(i);
-           if (!p.children.containsKey(String.valueOf(letter))) {
-               return false;
-           }
-           p = p.children.get(String.valueOf(letter));
+            if (!p.children.containsKey(letter)) {
+                return false;
+            }
+            p = p.children.get(letter);
         }
         return p.endOfWord;
     }
@@ -68,27 +72,63 @@ public class Trie {
         Trie p = this;
         for (int i = 0; i < word.length(); i++) {
             char letter = word.charAt(i);
-            if (!p.children.containsKey(String.valueOf(letter))) {
+            if (!p.children.containsKey(letter)) {
                 return false;
             }
-            p = p.children.get(String.valueOf(letter));
+            p = p.children.get(letter);
         }
         return true;
     }
 
-    public static void main(String[] args) {
-        Trie obj = new Trie();
-        obj.insert("apple");
-        boolean res1 = obj.search("apple");
-        boolean res2 = obj.search("app");
-        boolean res3 = obj.startsWith("app");
-        obj.insert("app");
-        boolean res4 = obj.search("app");
-        System.out.println(res1);
-        System.out.println(res2);
-        System.out.println(res3);
-        System.out.println(res4);
+    /**
+     * 查看字典树中以 prefix 开头的单词
+     */
+    public List<String> matchPrefix(String prefix) {
+        List<String> res = new ArrayList<>();
+        if (prefix == null || prefix.equals("")) {
+            return res;
+        }
 
-        String str = "12314";
+        char letter;
+        Trie p = this;
+        for (int i = 0; i < prefix.length(); i++) {
+            letter = prefix.charAt(i);
+            if (!p.children.containsKey(letter)) {
+                return res;
+            }
+            p = p.children.get(letter);
+        }
+
+        matchPrefixHelper(p, prefix, res);
+        return res;
+    }
+
+    private void matchPrefixHelper(Trie root, String s, List<String> container) {
+        if (root.endOfWord) {
+            container.add(s);
+        }
+
+        for (Map.Entry<Character, Trie> entry : root.children.entrySet()) {
+            matchPrefixHelper(entry.getValue(), s + entry.getValue().letter, container);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Trie trie = new Trie();
+        trie.insert("你好");
+        trie.insert("你");
+        System.out.println(trie.search("你好"));
+        System.out.println(trie.startsWith("你好"));
+        trie.insert("你好吗");
+        trie.insert("你真棒");
+        trie.insert("你好坏");
+        trie.insert("你真坏");
+        System.out.println(trie.search("你好"));
+        System.out.println(trie.startsWith("你好"));
+        System.out.println(trie.search("你好吗"));
+        System.out.println(trie.startsWith("你好吗"));
+
+        System.out.println(trie.matchPrefix("你"));
     }
 }
