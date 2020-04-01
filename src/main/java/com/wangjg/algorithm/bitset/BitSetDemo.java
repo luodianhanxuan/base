@@ -1,6 +1,5 @@
 package com.wangjg.algorithm.bitset;
 
-import java.util.Arrays;
 import java.util.BitSet;
 
 /**
