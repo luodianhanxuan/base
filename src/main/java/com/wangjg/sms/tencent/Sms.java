@@ -24,12 +24,12 @@ public class Sms {
     /**
      * 腾讯短信应用 sdk appId
      */
-    private int appid = 1400341121; // AppID 以1400开头
+    private int appid = 1400341231; // AppID 以1400开头
 
     /**
      * 短信应用 SDK AppKey
      */
-    private String appkey = "9b55c3c5f1182972065a099e98858a61";
+    private String appkey = "9b5663c5f1182972065a099e98858a61";
 
     // 签名 : 签名参数使用的是`签名内容`，而不是`签名ID`。这里的签名"腾讯云"只是示例，真实的签名需要在短信控制台申请
     String smsSign = "宽拓智融";
