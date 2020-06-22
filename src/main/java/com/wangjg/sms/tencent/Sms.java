@@ -24,7 +24,7 @@ public class Sms {
     /**
      * 腾讯短信应用 sdk appId
      */
-    private int appid = 1400341231; // AppID 以1400开头
+    private int appid = 1400241231; // AppID 以1400开头
 
     /**
      * 短信应用 SDK AppKey
