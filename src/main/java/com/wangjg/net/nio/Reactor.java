@@ -81,7 +81,7 @@ class SelectorThreadGroup {
 
 
 interface EventHandler {
-    void doHandle();
+    void doHandle(SelectionKey key);
 }
 
 class AcceptorHandler implements EventHandler {
@@ -98,7 +98,7 @@ class AcceptorHandler implements EventHandler {
     }
 
     @Override
-    public void doHandle() {
+    public void doHandle(SelectionKey key) {
         try {
             SocketChannel client = serverSocketChannel.accept();
             client.configureBlocking(false);
@@ -130,7 +130,7 @@ class ReadHanlder implements EventHandler {
     }
 
     @Override
-    public void doHandle() {
+    public void doHandle(SelectionKey key) {
         ByteBuffer data = ByteBuffer.allocateDirect(4096);
         try {
             socketChannel.read(data);
@@ -144,10 +144,14 @@ class ReadHanlder implements EventHandler {
                 data.flip();
                 socketChannel.write(data);
                 data.clear();
-
             }
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                socketChannel.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }
@@ -181,7 +185,7 @@ class InitiationDispatcher implements Executor {
                         SelectionKey key = iterator.next();
                         iterator.remove();
                         EventHandler handler = (EventHandler) key.attachment();
-                        handler.doHandle();
+                        handler.doHandle(key);
                     }
                 }
                 runTasks();
