@@ -44,7 +44,7 @@ class Bootstrap {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.bind(new InetSocketAddress(port));
-            InitiataionDispacher next = group.next();
+            InitiationDispatcher next = group.next();
             next.execute(() -> {
                 AcceptorHandler acceptorHandler = new AcceptorHandler(serverSocketChannel, childGroup);
                 Selector selector = next.getSelector();
@@ -63,18 +63,18 @@ class Bootstrap {
 
 class SelectorThreadGroup {
 
-    private InitiataionDispacher[] selectorThreads;
+    private InitiationDispatcher[] selectorThreads;
 
     private AtomicInteger pos = new AtomicInteger(0);
 
     public SelectorThreadGroup(int nThread) {
-        selectorThreads = new InitiataionDispacher[nThread];
+        selectorThreads = new InitiationDispatcher[nThread];
         for (int i = 0; i < nThread; i++) {
-            selectorThreads[i] = new InitiataionDispacher();
+            selectorThreads[i] = new InitiationDispatcher();
         }
     }
 
-    public InitiataionDispacher next() {
+    public InitiationDispatcher next() {
         return selectorThreads[pos.getAndIncrement() % selectorThreads.length];
     }
 }
@@ -103,7 +103,7 @@ class AcceptorHandler implements EventHandler {
             SocketChannel client = serverSocketChannel.accept();
             client.configureBlocking(false);
             ReadHanlder readHanlder = new ReadHanlder(client);
-            InitiataionDispacher next = childGroup.next();
+            InitiationDispatcher next = childGroup.next();
             next.execute(() -> {
                 Selector selector = next.getSelector();
                 try {
@@ -152,7 +152,7 @@ class ReadHanlder implements EventHandler {
     }
 }
 
-class InitiataionDispacher implements Executor {
+class InitiationDispatcher implements Executor {
 
     // SynchronousEventDemultiplexer
     private Selector selector;
@@ -161,7 +161,7 @@ class InitiataionDispacher implements Executor {
 
     private Thread thread = null;
 
-    public InitiataionDispacher() {
+    public InitiationDispatcher() {
         try {
             this.selector = Selector.open();
         } catch (IOException e) {
@@ -215,7 +215,7 @@ class InitiataionDispacher implements Executor {
         if (!inEventLoop()) {
             thread = new Thread(() -> {
                 thread = Thread.currentThread();
-                InitiataionDispacher.this.run();
+                InitiationDispatcher.this.run();
             });
             thread.start();
         }
