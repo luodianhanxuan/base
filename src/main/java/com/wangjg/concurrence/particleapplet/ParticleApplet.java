@@ -1,6 +1,6 @@
 package com.wangjg.concurrence.particleapplet;
 
-import java.applet.Applet;
+import java.applet.*;
 
 /**
  * @author wangjg
