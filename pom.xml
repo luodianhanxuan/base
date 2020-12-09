@@ -40,5 +40,6 @@
             <artifactId>gitlab4j-api</artifactId>
             <version>4.15.7</version>
         </dependency>
+
     </dependencies>
 </project>
