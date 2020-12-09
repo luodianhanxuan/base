@@ -6,6 +6,7 @@ import java.applet.*;
  * @author wangjg
  * 2019/11/5
  */
+@SuppressWarnings("WeakerAccess")
 public class ParticleApplet extends Applet {
     protected Thread[] threads = null;
 
